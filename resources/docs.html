@@ -2297,6 +2297,12 @@
 				if (vd.return_type) {
 					typeInfo += ` <span style="font-size: 0.8em; opacity: 0.7;">Returns:</span> ${renderTypeName(vd.return_type)}`;
 				}
+                if (vd.docs && vd.docs.return) {
+                    if (!vd.return_type) {
+                        typeInfo += ` <span style="font-size: 0.8em; opacity: 0.7;">Returns: </span>`
+                    }
+                typeInfo += `<span style="font-size: 0.95em" class="doc-text"> ${vd.return_type ? '- ' : ''}${escapeHtml(vd.docs.return)}</span>`
+                }
 				if (vd.base_type && vd.base_type.name) {
 					typeInfo += ` (base: ${renderTypeName(vd.base_type)})`;
 				}
