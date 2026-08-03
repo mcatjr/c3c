@@ -550,6 +550,16 @@
 			gap: 10px;
 		}
 
+		.header-label {
+			margin-top: 5px;
+			font-size: 0.8em;
+			opacity: 0.7;
+		}
+
+		.header-description {
+			font-size: 0.95em;
+		}
+
 		.interface-link {
 			color: #4ec9b0;
 			text-decoration: none;
@@ -2294,27 +2304,28 @@
 
 			if (vd) {
 				let typeInfo = '';
-				if (vd.return_type) {
-					typeInfo += ` <span style="font-size: 0.8em; opacity: 0.7;">Returns:</span> ${renderTypeName(vd.return_type)}`;
+				if ((vd.return_type || (vd.docs && vd.docs.return)) &&
+					(vd.kind === 'function' || vd.kind === 'macro' || vd.kind === 'method' || vd.kind === 'macro_method')) {
+					typeInfo += ` <span class="header-label">Returns: </span>`
+					if (vd.return_type) {
+						typeInfo += `${renderTypeName(vd.return_type)}`;
+					}
+					if (vd.docs && vd.docs.return) {
+						typeInfo += `<span class="header-description doc-text">${(vd.return_type ? ' - ' : '')}${escapeHtml(vd.docs.return)}</span>`;
+					}
 				}
-                if (vd.docs && vd.docs.return) {
-                    if (!vd.return_type) {
-                        typeInfo += ` <span style="font-size: 0.8em; opacity: 0.7;">Returns: </span>`
-                    }
-                typeInfo += `<span style="font-size: 0.95em" class="doc-text"> ${vd.return_type ? '- ' : ''}${escapeHtml(vd.docs.return)}</span>`
-                }
 				if (vd.base_type && vd.base_type.name) {
-					typeInfo += ` (base: ${renderTypeName(vd.base_type)})`;
+					typeInfo += ` <span class="header-label">Base Type: </span>${renderTypeName(vd.base_type)}`;
 				}
 				if (vd.interfaces && vd.interfaces.length > 0) {
 					const ifaces = vd.interfaces.map(i => {
-						if (i.uid) return `<a href="#" onclick="navigateTo('${i.uid}'); return false;">${i.name}</a>`;
+						if (i.uid) return `<a class="c3-interface type-link" href="#" onclick="navigateTo('${i.uid}'); return false;">${i.name}</a>`;
 						return i.name;
 					}).join(', ');
-					typeInfo += ` <span style="font-size: 0.8em; opacity: 0.8; font-family: sans-serif;">implements ${ifaces}</span>`;
+					typeInfo += ` <span class="header-label">Implements: </span>${ifaces}`;
 				}
 				if (typeInfo) {
-					html += `<span class="header-type-info">${typeInfo}</span>`;
+					html += `${typeInfo}`;
 				}
 			}
 			html += `</div>`;
