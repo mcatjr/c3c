@@ -2304,17 +2304,20 @@
 
 			if (vd) {
 				let typeInfo = '';
-				if ((vd.return_type || (vd.docs && vd.docs.return)) &&
-					(vd.kind === 'function' || vd.kind === 'macro' || vd.kind === 'method' || vd.kind === 'macro_method')) {
-					typeInfo += ` <span class="header-label">Returns: </span>`
-					if (vd.return_type) {
-						typeInfo += `${renderTypeName(vd.return_type)}`;
-					}
-					if (vd.docs && vd.docs.return) {
-						typeInfo += `<span class="header-description doc-text">${(vd.return_type ? ' - ' : '')}${escapeHtml(vd.docs.return)}</span>`;
-					}
+				switch (true) {
+					case (vd.return_type && (vd.kind === 'function' || vd.kind === 'macro' || vd.kind === 'method' || vd.kind === 'macro_method')):
+					case ((vd.docs && vd.docs.return) && (vd.kind === 'macro' || vd.kind === 'macro_method')):
+					case (vd.return_type && vd.kind === 'alias'):
+						typeInfo += ` <span class="header-label">Returns: </span>`;
+						if (vd.return_type) {
+							typeInfo += `${renderTypeName(vd.return_type)}`;
+						}
+						if (vd.docs && vd.docs.return) {
+							typeInfo += `<span class="header-description doc-text">${(vd.return_type ? ' - ' : '')}${escapeHtml(vd.docs.return)}</span>`;
+						}
 				}
 				if (vd.base_type && vd.base_type.name) {
+					if (typeInfo) typeInfo += `<span class="header-label"> , </span>`;
 					typeInfo += ` <span class="header-label">Base Type: </span>${renderTypeName(vd.base_type)}`;
 				}
 				if (vd.interfaces && vd.interfaces.length > 0) {
@@ -2322,6 +2325,7 @@
 						if (i.uid) return `<a class="c3-interface type-link" href="#" onclick="navigateTo('${i.uid}'); return false;">${i.name}</a>`;
 						return i.name;
 					}).join(', ');
+					if (typeInfo) typeInfo += `<span class="header-label"> , </span>`;
 					typeInfo += ` <span class="header-label">Implements: </span>${ifaces}`;
 				}
 				if (typeInfo) {

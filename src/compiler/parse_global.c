@@ -2427,7 +2427,7 @@ static inline Decl *parse_alias_type(ParseContext *c)
 		decl->type_alias_decl.decl = decl_type;
 		ASSIGN_TYPE_OR_RET(TypeInfo *type_info, parse_optional_type(c), poisoned_decl);
 		decl_type->fntype_decl.signature.rtype = type_infoid(type_info);
-		decl_type->docs = decl_from_contract_description(&c->contracts);
+		decl->docs = decl_from_contract_description(&c->contracts);
 		if (!parse_fn_parameter_list(c, &(decl_type->fntype_decl.signature)))
 		{
 			return poisoned_decl;
